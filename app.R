@@ -1,0 +1,52 @@
+########################################################################
+########################################################################
+########################################################################
+### Load Scripts
+
+# Set up file paths for loading remaining scripts
+# Please update the variable File_path to where the standalone SDC App folder is.
+# File_path <- "/chi/(1) Project Folders/Stats Disclosure/5 Scripts/"
+
+
+# These variables do not need to be updated
+# folder_name <- "SDC App - Part 19b - Standalone Version/"
+# script_folder <- paste0(File_path,folder_name)
+# setwd(script_folder)
+
+# Packages Required
+source("1_Global_Scripts/packages.R")
+
+# Functions required for App
+source("1_Global_Scripts/Disclosure_functions.R")
+source("1_Global_Scripts/App_functions.R")
+
+# App Theme - PHS Branding
+source("1_Global_Scripts/phs_branding.R")
+
+# Training Data
+source("1_Global_Scripts/Dummy_Data_Files.R")
+
+########################################################################
+########################################################################
+########################################################################
+### Define UI for SDC app ----
+source("2_UI_Scripts/ui.R",  local = TRUE)$value
+
+########################################################################
+########################################################################
+########################################################################
+# Define server logic to read selected file ----
+source("3_Server_Scripts/server.R",  local = TRUE)$value
+
+########################################################################
+########################################################################
+########################################################################
+
+# Run the app ----
+shinyApp(ui, server)
+
+########################################################################
+########################################################################
+######################### End of Script ################################
+########################################################################
+########################################################################

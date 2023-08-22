@@ -2,29 +2,25 @@
 ############################################################
 
 ##############################
+# Load Packages 
 
-# Required Packages for shiny app
-packages = c("tidyr", "data.table", 
-             "glue", "plyr",
-             "dplyr", "readr", 
-             "rstudioapi", "DistributionUtils", 
-             "stringr", "readxl",
-             "haven", "shiny",
-             "openxlsx", "DT",
-             "base64enc", "sparkline",
-             "shinyalert")
-
-
-# Load pacakges or install & load packages
-package.check <- lapply(
-  packages,
-  FUN = function(x) {
-    if (!require(x, character.only = TRUE)) {
-      install.packages(x, dependencies = TRUE)
-      library(x, character.only = TRUE)
-    }
-  }
-)
+library(tidyr)
+library(data.table)
+library(glue)
+library(plyr)
+library(dplyr)
+library(readr)
+library(rstudioapi)
+library(DistributionUtils)
+library(stringr)
+library(readxl)
+library(haven)
+library(shiny)
+library(openxlsx)
+library(DT)
+library(base64enc)
+library(sparkline)
+library(shinyalert)
 
 ##############################
 

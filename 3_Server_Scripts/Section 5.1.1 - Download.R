@@ -45,12 +45,13 @@ output$downloadData <- downloadHandler(
   # Store Filename
   filename = function(){
     
-    # paste0("SDC_Test_Data.csv")
-    
+
     # Ensures that this only works when data is provided
     shiny::validate(
       need(App_data$values, "There is no input data")
     )
+    
+    paste0("SDC_", input$upload$name)
     
   },
   
@@ -64,8 +65,6 @@ output$downloadData <- downloadHandler(
     
     # Final Data
     Final <- App_data$values 
-    
-    # write.csv(Final, fname, row.names = FALSE)
     
     
     if (input$upload$type == "text/csv") {

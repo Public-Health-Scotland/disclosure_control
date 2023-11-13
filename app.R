@@ -3,16 +3,6 @@
 ########################################################################
 ### Load Scripts
 
-# Set up file paths for loading remaining scripts
-# Please update the variable File_path to where the standalone SDC App folder is.
-# File_path <- "/chi/(1) Project Folders/Stats Disclosure/5 Scripts/"
-
-
-# These variables do not need to be updated
-# folder_name <- "SDC App - Part 19b - Standalone Version/"
-# script_folder <- paste0(File_path,folder_name)
-# setwd(script_folder)
-
 # Packages Required
 source("1_Global_Scripts/packages.R")
 

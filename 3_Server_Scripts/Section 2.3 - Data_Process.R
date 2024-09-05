@@ -27,7 +27,7 @@ observeEvent(
     
     # Ensures that the input data is available
     shiny::validate(
-      need(data(), "There is no Input Data")
+      need(App_data$values, "There is no Input Data")
     )
     
     # Ensures that input variable is selected 
@@ -74,7 +74,7 @@ observeEvent(
     
     # Ensure that the input data is available
     shiny::validate(
-      need(data(), "There is no Input Data")
+      need(App_data$values, "There is no Input Data")
     )
     
     # Ensure that input variable is selected

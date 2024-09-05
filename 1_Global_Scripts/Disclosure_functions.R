@@ -1,21 +1,28 @@
-############################################################
-############################################################
-# Functions to perform statistical disclosure
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### Disclosure_function.R Script    ### ### ### ### ### ### ### ### ### ### ### ### 
+### ### ### ### ### ### ### ### Functions to perform statistical disclosure ### ### ### ### ### ### ### ### ### 
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
-##############################
-# Useful Functions
+
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+# 0. Useful Functions ----
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 # Not in function
 `%notin%` <- Negate(`%in%`)
 
-##############################
-# Rounding Function
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+# 1. SDC Rounding Function ----
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+
 Stat_Round <- function(orig_data,var_choice,round_cond) {
   
-  # Variables to be rounded ----
+  # Variables to be rounded
   orig_var <- orig_data[,var_choice]
   
-  # Replace any NAs with a high value ----
+  # Replace any NAs with a high numeric value
   orig_var[is.na(orig_var)] <- 999999999
   
   # Ensures that replacement of NAs occurs
@@ -24,10 +31,10 @@ Stat_Round <- function(orig_data,var_choice,round_cond) {
   # NA value after rounding has occured - this is changed back to NA for the disclosed data
   rounding_NA_value <- round_any(999999999,round_cond,round)
   
-  # Check if column headers are all whole numbers ----
+  # Check if column headers are all whole numbers
   num_var_choice <- unlist(lapply(orig_data[var_choice], is.wholenumber))
   
-  # Only select variables with whole numbers ----
+  # Only select variables with whole numbers
   num_var_choice <- data.frame(num_var_choice) %>%
     filter(num_var_choice == TRUE) %>%
     rownames(num_var_choice)
@@ -45,7 +52,7 @@ Stat_Round <- function(orig_data,var_choice,round_cond) {
                                        round_any(x, round_cond, round)
                                    else x)
   
-  # Add NAs back to data ----
+  # Add NAs back to data
   rounded_data[,var_choice][rounded_data[,var_choice] == rounding_NA_value] <- NA
   
   # Rounded Data
@@ -53,13 +60,13 @@ Stat_Round <- function(orig_data,var_choice,round_cond) {
   
 }
 
-##############################
-# Cell Swapping Function
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+# 2. Cell Swapping Function ----
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 Stat_Swap <- function(orig_data,var_choice,swap_cond) {
   
-  
-  # Variables to be processed ----
+  # Variables to be processed
   orig_var <- orig_data[,var_choice]
   
   # Replace any NAs with high value - this is changed back to NA for the disclosed data
@@ -68,21 +75,21 @@ Stat_Swap <- function(orig_data,var_choice,swap_cond) {
   # Ensures that replacement of NAs occurs
   orig_data[,var_choice] <- orig_var
   
-  # Copy of original data to process ----
+  # Copy of original data to process
   swapped_data <- orig_data 
   
-  # Check if column headers are all whole numbers ----
+  # Check if column headers are all whole numbers
   num_var_choice <- unlist(lapply(orig_data[var_choice], is.wholenumber))
   
-  # Only select variables with whole numbers ----
+  # Only select variables with whole numbers
   num_var_choice <- data.frame(num_var_choice) %>%
     filter(num_var_choice == TRUE) %>%
     rownames(num_var_choice)
   
-  # Get number of columns containing whole numbers ----
+  # Get number of columns containing whole numbers
   var_swap_len <- length(num_var_choice) 
   
-  # For Loop to process each numeric column ----
+  # For Loop to process each numeric column
   for (i in 1:var_swap_len) {
     
     # checks if variable value is less than or equal to the swapping condition 
@@ -93,14 +100,14 @@ Stat_Swap <- function(orig_data,var_choice,swap_cond) {
     # If statement for columns where values are swapped, else statements if no value in a column needs to be swapped 
     if (length(ind_numbers) > 0) {
       
-      # Allows for indices position to be swapped ----
+      # Allows for indices position to be swapped
       swapindices <- sample(x = c(chk),ind_numbers)
       newindices <- sample(swapindices,ind_numbers)
       
       # If statement when only one value is below swapping condition to ensure no swapping occurs
       if(length(swapindices) > 1){
         
-        # Performs Swapping ----
+        # Performs Swapping
         swapped_data[swapindices,num_var_choice[i]] <- swapped_data[newindices,num_var_choice[i]]
         # Clear Indices Values
         rm(swapindices,newindices)
@@ -109,7 +116,7 @@ Stat_Swap <- function(orig_data,var_choice,swap_cond) {
         
         # Clear Indices Values
         rm(swapindices,newindices)
-        # No Cell Swapping Occurs ----
+        # No Cell Swapping Occurs
         swapped_data <- swapped_data 
         
       }
@@ -117,26 +124,26 @@ Stat_Swap <- function(orig_data,var_choice,swap_cond) {
       
     } else {
       
-      # No Cell Swapping Occurs ----
+      # No Cell Swapping Occurs
       swapped_data <- swapped_data 
     }
   }
   
-  # Add NAs back to data ----
+  # Add NAs back to data
   swapped_data[,var_choice][swapped_data[,var_choice] == 999999999] <- NA
   
-  # Swapped Data ----
+  # Swapped Data
   return(swapped_data)
   
 }
 
-##############################
-# Primary Suppression Function
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+# 3a. Primary Suppression Function ----
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 Stat_Primary_Supress <- function(orig_data,var_choice,char_supp,sup_cond,zero) {
   
-  
-  # Variables to be processed ----
+  # Variables to be processed
   orig_var <- orig_data[,var_choice]
   
   # Replace any NAs with high value - this is changed back to NA for the disclosed data
@@ -145,24 +152,24 @@ Stat_Primary_Supress <- function(orig_data,var_choice,char_supp,sup_cond,zero) {
   # Ensures that replacement of NAs occurs
   orig_data[,var_choice] <- orig_var
   
-  # Check if column headers are all whole numbers ----
+  # Check if column headers are all whole numbers
   num_var_choice <- unlist(lapply(orig_data[var_choice], is.wholenumber))
   
-  # Only select variables with whole numbers ----
+  # Only select variables with whole numbers
   num_var_choice <- data.frame(num_var_choice) %>%
     filter(num_var_choice == TRUE) %>%
     rownames(num_var_choice)
   
-  # Store Variables choosen for Primary Suppression ----
+  # Store Variables choosen for Primary Suppression
   x <- orig_data[,num_var_choice]
   
-  # Copy of original data ----
+  # Copy of original data
   primary_data <- orig_data 
   
-  # If Statement - Leave zero unsuppress if checkbox is ticked - otherwise suppress zeros
+  # If Statement - Leave zero unsuppressed if checkbox is ticked - otherwise suppress zeros
   if (zero == TRUE){
     
-    # Applies Primary Suppression on all numbers below suppression condition apart from zero  ----
+    # Applies Primary Suppression on all numbers below suppression condition apart from zero
     primary_data[,num_var_choice] <- lapply(x,
                                      function(x)
                                        if(is.wholenumber(x)) 
@@ -170,7 +177,7 @@ Stat_Primary_Supress <- function(orig_data,var_choice,char_supp,sup_cond,zero) {
                                      else x)
   } else {
     
-    # Applies Primary Suppression on all numbers below suppression condition ----
+    # Applies Primary Suppression on all numbers below suppression condition
     primary_data[,num_var_choice] <- lapply(x,
                                      function(x)
                                        if(is.wholenumber(x)) 
@@ -178,16 +185,17 @@ Stat_Primary_Supress <- function(orig_data,var_choice,char_supp,sup_cond,zero) {
                                      else x)
   }
   
-  # Add NAs back to data ----
+  # Add NAs back to data
   primary_data[,var_choice][primary_data[,var_choice] == "999999999"] <- NA
   
-  # Primary Suppressed Data ----
+  # Primary Suppressed Data
   return(primary_data)
   
 }
 
-##############################
-# Primary and Secondary Suppression Function
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+# 3b. Primary and Secondary Suppression Function ----
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, char_supp, sup_cond, zero) {
   
@@ -214,10 +222,11 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
       select(-Serial)
   }
   
+### ### ### ### ### ### ### ### ### ### ### ### ###
+## 1. Primary Suppression performed first ----
+### ### ### ### ### ### ### ### ### ### ### ### ###
   
-  ############# Primary Suppresion performed first ----
-  
-  # Variables to be processed ----
+  # Variables to be processed
   orig_var <- orig_data[,pri_var_choice]
   
   # Replace any NAs with high value - this is changed back to NA for the disclosed data
@@ -229,21 +238,21 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
   # Check if column headers are all whole numbers for primary variables 
   pri_var_choice <- unlist(lapply(orig_data[pri_var_choice], is.wholenumber))
   
-  # Only select variables with whole numbers ----
+  # Only select variables with whole numbers
   pri_var_choice <- data.frame(pri_var_choice) %>%
     filter(pri_var_choice == TRUE) %>%
     rownames(pri_var_choice)
   
-  # Store Variables choosen for Primary Suppression ----
+  # Store Variables choosen for Primary Suppression
   x <- orig_data[,pri_var_choice]
   
-  # Copy of original data ----
+  # Copy of original data
   primary_data <- orig_data 
   
   # Primary Suppression - If Statement which leaves zero unsuppress if checkbox is ticked - otherwise suppress zeros
   if (zero == TRUE){
     
-    # Applies Primary Suppression on all numbers below suppression condition apart from zero  ----
+    # Applies Primary Suppression on all numbers below suppression condition apart from zero
     primary_data[,pri_var_choice] <- lapply(x,
                                          function(x)
                                            if(is.wholenumber(x)) 
@@ -251,7 +260,7 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
                                          else x)
   } else {
     
-    # Applies Primary Suppression on all numbers below suppression condition ----
+    # Applies Primary Suppression on all numbers below suppression condition
     primary_data[,pri_var_choice] <- lapply(x,
                                          function(x)
                                            if(is.wholenumber(x)) 
@@ -259,13 +268,14 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
                                          else x)
   }
   
-  # Add NAs back to data ----
+  # Add NAs back to data
   primary_data[,pri_var_choice][primary_data[,pri_var_choice] == "999999999"] <- NA
   
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
+  ## 2. Secondary Suppression ----
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
   
-  ############# Secondary Suppression ----
-  
-  # Variables to be processed ----
+  # Variables to be processed
   orig_var_sec <- primary_data[,sec_var_choice]
   
   # Replace any NAs with high value - this is changed back to NA for the disclosed data
@@ -277,22 +287,22 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
   # Check if column headers are all whole numbers for secondary variables 
   sec_var_choice <- unlist(lapply(primary_data[sec_var_choice], is.wholenumber))
   
-  # Only select variables with whole numbers ----
+  # Only select variables with whole numbers
   sec_var_choice <- data.frame(sec_var_choice) %>%
     filter(sec_var_choice == TRUE) %>%
     rownames(sec_var_choice)
   
-  # Store Variables choosen for Secondary Suppression ----
+  # Store Variables choosen for Secondary Suppression
   x <- primary_data[,sec_var_choice]
   
-  #Copy of primary suppressed data ----
+  #Copy of primary suppressed data
   init_secondary_data <- primary_data
   
   # Initial Secondary Suppression - Primary Suppression is done first before the remaining values are suppressed
-  # Applies Secondary Suppression on all numbers below suppression condition apart from zero  ----
+  # Applies Secondary Suppression on all numbers below suppression condition apart from zero
   if (zero == TRUE){
     
-    # Applies Initial Secondary Suppression on all numbers below suppression condition apart from zero  ----
+    # Applies Initial Secondary Suppression on all numbers below suppression condition apart from zero
     init_secondary_data[,sec_var_choice] <- lapply(x,
                                              function(x)
                                                if(is.wholenumber(x)) 
@@ -300,7 +310,7 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
                                              else x)
   } else {
     
-    # Applies Initial Secondary Suppression on all numbers below suppression condition ----
+    # Applies Initial Secondary Suppression on all numbers below suppression condition
     init_secondary_data[,sec_var_choice] <- lapply(x,
                                              function(x)
                                                if(is.wholenumber(x)) 
@@ -308,13 +318,13 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
                                              else x)
   }
   
-  #Copy of initial secondary suppressed data ----
+  #Copy of initial secondary suppressed data
   secondary_data <- init_secondary_data
   
-  # # Store Variables choosen for Secondary Suppression ----
+  # # Store Variables choosen for Secondary Suppression
   x <- secondary_data[,sec_var_choice]
   
-  # Count number of suppressions in each row ----
+  # Count number of suppressions in each row
   secondary_data$SDC_count <- apply(x, 1, function(x) length(which(x==char_supp)))
   
   # Replace zeros with identifier to avoid supression
@@ -324,7 +334,7 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
                                                replace(x, x == "0", "zero_rep")
                                            else x)
   
-  #Copy of initial secondary suppressed data ----
+  #Copy of initial secondary suppressed data
   x <- secondary_data[,sec_var_choice]
   
   # Replace high NA numbers with identifier to avoid supression
@@ -334,11 +344,11 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
                                                replace(x, x == "999999999", "missing_value")
                                            else x)
   
-  # # Store Variables choosen for Secondary Suppression ----
+  # # Store Variables choosen for Secondary Suppression
   x <- secondary_data[,sec_var_choice]
   
   
-  # Extracts number to be suppressed - this occurs if there is only one suppressed secondary value ----
+  # Extracts number to be suppressed - this occurs if there is only one suppressed secondary value
   secondary_data$min_value_sec <- ifelse(secondary_data$SDC_count == 1, apply(x, 1, function(x) min(as.numeric(x),na.rm = TRUE)),
                                         NA)
   
@@ -346,7 +356,7 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
   
   if (length(sec_var_choice) > 0) {
     
-    # For loop which performs Secondary Suppression ----
+    # For loop which performs Secondary Suppression
     for (i in 1:length(sec_var_choice)) {
       
       # Suppress next lowest value in the secondary varible column for each row if only one value is suppressed
@@ -362,9 +372,8 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
     
   }
   
-  #############
   
-  # Store Variables choosen for Secondary Suppression ----
+  # Store Variables choosen for Secondary Suppression
   x <- secondary_data[,sec_var_choice]
   
   # Add zeros back to dataset
@@ -374,7 +383,7 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
                                                replace(x, x == "missing_value", NA)
                                            else x)
   
-  # Store Variables choosen for Secondary Suppression ----
+  # Store Variables choosen for Secondary Suppression
   x <- secondary_data[,sec_var_choice]
   
   # Add NAs back to dataaset
@@ -409,8 +418,8 @@ Stat_Secondary_Supress <- function(orig_data, pri_var_choice, sec_var_choice, ch
   
 }
 
-##############################
-
-
-############################################################
-############################################################
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### End of Sub- Script  ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###

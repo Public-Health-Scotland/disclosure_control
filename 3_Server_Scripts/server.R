@@ -1,68 +1,108 @@
-########################################################################
-########################################################################
-########################################################################
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### server.R Script ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### Setup Server for Shiny App  ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+# Server Function ----
+# This is where the external scripts get uploaded for the server function for the different App tabs
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
 server <- function(input, output, session) {
   
-  # This is where the external scripts get uploaded for the server function for the different App tabs
-  ############################################################
-  ############################################################
-  # Home Section - there is no script required as the home section has no active functions.
-
-  ############################################################
-  ############################################################
-  # File Upload/Data Input Section
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
+  ## 1. SDC Home Page ----
+  # No script required as the home section has no active functions.
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
   
-  # Training Data Input Side Panel Script
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
+  ## 2. Data Input Page ----
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
+  
+  ### ### ### ### ### ### ### ###
+  ### 1. Training Data Input Side Panel Script ----
+  ### ### ### ### ### ### ### ###
+  
   source(glue("3_Server_Scripts/Section 2.1 - Dummy_Data.R"),  local = TRUE)$value
   
-  # File Upload Side Panel Script
+  ### ### ### ### ### ### ### ###
+  ### 2. File Upload Side Panel Script ----
+  ### ### ### ### ### ### ### ###
+  
   source(glue("3_Server_Scripts/Section 2.2 - File_Upload.R"),  local = TRUE)$value
   
-  # Data Process Side Panel Script
+  ### ### ### ### ### ### ### ###
+  ### 3. Data Process Side Panel Script ----
+  ### ### ### ### ### ### ### ###
+  
   source(glue("3_Server_Scripts/Section 2.3 - Data_Process.R"),  local = TRUE)$value
   
-  # Data Summary after processing Side Panel script
+  ### ### ### ### ### ### ### ###
+  ### 4. Data Summary after processing Side Panel script ----
+  ### ### ### ### ### ### ### ###
+  
   source(glue("3_Server_Scripts/Section 2.4 - Data_Summary_post_process.R"),  local = TRUE)$value
   
-  ############################################################
-  ############################################################
-  # Filtering/Formatting Section
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
+  ## 3. Filtering/Formatting Page ----
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
   
-  # Filtering Side Panel Script
+  ### ### ### ### ### ### ### ###
+  ### 1. Filtering Side Panel Script ----
+  ### ### ### ### ### ### ### ###
+  
   source(glue("3_Server_Scripts/Section 3.1 - Filtering.R"),  local = TRUE)$value
   
-  # Formatting Side Panel Script
+  ### ### ### ### ### ### ### ###
+  ### 2. Formatting Side Panel Script ----
+  ### ### ### ### ### ### ### ###
+  
   source(glue("3_Server_Scripts/Section 3.2 - Formatting.R"),  local = TRUE)$value
   
-  ############################################################
-  ############################################################
-  # SDC Methods Section
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
+  ## 4. SDC Methods Page ----
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
+
+  ### ### ### ### ### ### ### ###
+  ### 1. Rounding Side Panel Script ----
+  ### ### ### ### ### ### ### ###
   
-  # Rounding Side Panel Script
   source(glue("3_Server_Scripts/Section 4.1 - Rounding.R"),  local = TRUE)$value
   
-  # Swapping Side Panel Script
+  ### ### ### ### ### ### ### ###
+  ### 2. Swapping Side Panel Script ----
+  ### ### ### ### ### ### ### ###
+  
   source(glue("3_Server_Scripts/Section 4.2 - Swapping.R"),  local = TRUE)$value
   
-  # Suppression Side Panel Script
+  ### ### ### ### ### ### ### ###
+  ### 3. Suppression Side Panel Script ----
+  ### ### ### ### ### ### ### ###
+  
   source(glue("3_Server_Scripts/Section 4.3 - Suppression.R"),  local = TRUE)$value
   
-  ############################################################
-  ############################################################
-  # Download Section
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
+  ## 5. Download Page ----
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
+
+  ### ### ### ### ### ### ### ###
+  ### 1. Download Script ----
+  ### ### ### ### ### ### ### ###
   
-  # Download Script
   source(glue("3_Server_Scripts/Section 5 - Download.R"),  local = TRUE)$value
   
-  ############################################################
-  ############################################################
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
+  ## 6. Shut App when browser is closed ----
+  ### ### ### ### ### ### ### ### ### ### ### ### ###
   
-  # Shut App when browser is closed
   session$onSessionEnded(stopApp)
   
 }
 
-########################################################################
-########################################################################
-########################################################################
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### End of Server Script    ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
+### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
